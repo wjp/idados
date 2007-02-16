@@ -58,45 +58,6 @@
 #include "../../ldr/pe/pe.h"
 
 //--------------------------------------------------------------------------
-void idaapi rebase_if_required_to(ea_t new_base)
-{
-  if ( is_miniidb() )
-    return;
-  netnode penode;
-  penode.create(PE_NODE);
-  ea_t currentbase = new_base;
-  ea_t imagebase = penode.altval(PE_ALT_IMAGEBASE); // loading address (usually pe.imagebase)
-
-  if ( imagebase == 0 )
-  {
-    warning("AUTOHIDE DATABASE\n"
-            "IDA Pro couldn't automatically determine if the program should be\n"
-            "rebased in the database because the database format is too old and\n"
-            "doesn't contain enough information.\n"
-            "Create a new database if you want automated rebasing to work properly.\n"
-            "Note you can always manually rebase the program by using the\n"
-            "Edit, Segments, Rebase program command.");
-  }
-  else if ( imagebase != currentbase )
-  {
-    int code = rebase_program(currentbase - imagebase, MSF_FIXONCE);
-    if ( code != MOVE_SEGM_OK )
-    {
-      msg("Failed to rebase program, error code %d\n", code);
-      warning("ICON ERROR\n"
-              "AUTOHIDE NONE\n"
-              "IDA Pro failed to rebase the program.\n"
-              "Most likely it happened because of the debugger\n"
-              "segments created to reflect the real memory state.\n\n"
-              "Please stop the debugger and rebase the program manually.\n"
-              "For that, please select the whole program and\n"
-              "use Edit, Segments, Rebase program with delta 0x%08lX",
-                                        currentbase - imagebase);
-    }
-  }
-}
-
-//--------------------------------------------------------------------------
 // Initialize Win32 debugger plugin
 static bool init_plugin(void)
 {
