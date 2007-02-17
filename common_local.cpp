@@ -2,6 +2,28 @@
 
 static const uchar bpt_code[] = BPT_CODE;
 
+void idaapi rebase_if_required_to(ea_t new_base)
+{
+  segment_t* seg = getnseg(0);
+
+  ea_t currentbase = new_base;
+  ea_t imagebase = seg->startEA;
+  if (imagebase != currentbase) {
+    int code = rebase_program(currentbase - imagebase, MSF_FIXONCE);
+    if ( code != MOVE_SEGM_OK )
+    {
+      msg("Failed to rebase program, error code %d\n", code);
+      warning("IDA Pro failed to rebase the program.\n"
+              "Most likely it happened because of the debugger\n"
+              "segments created to reflect the real memory state.\n\n"
+              "Please stop the debugger and rebase the program manually.\n"
+              "For that, please select the whole program and\n"
+              "use Edit, Segments, Rebase program with delta 0x%08lX",
+                                        currentbase - imagebase);
+    }
+  }
+}
+
 static bool ask_user_and_copy(const char *ipath);
 //--------------------------------------------------------------------------
 static int idaapi is_ok_bpt(bpttype_t type, ea_t ea, int len)
