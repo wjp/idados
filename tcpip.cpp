@@ -16,28 +16,25 @@
 #  ifdef _MSC_VER
 #    pragma comment(lib, "wsock32")
 #  endif
-#endif
-
-#ifdef __LINUX__
-#include <errno.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#define qsend(socket, buf, size) send(socket, buf, size, 0)
-#define qrecv(socket, buf, size) recv(socket, (char *)buf, size, 0)
-#define get_network_error()      errno
-#define closesocket(s)           close(s)
-#define SOCKET int
-#define INVALID_SOCKET (-1)
-#define SOCKET_ERROR   (-1)
+#else   // not NT, i.e. UNIX
+#  include <errno.h>
+#  include <sys/socket.h>
+#  include <netinet/in.h>
+#  include <netinet/tcp.h>
+#  include <arpa/inet.h>
+#  include <netdb.h>
+#  define qsend(socket, buf, size) send(socket, buf, size, 0)
+#  define qrecv(socket, buf, size) recv(socket, (char *)buf, size, 0)
+#  define get_network_error()      errno
+#  define closesocket(s)           close(s)
+#  define SOCKET int
+#  define INVALID_SOCKET (-1)
+#  define SOCKET_ERROR   (-1)
 #endif
 
 //-------------------------------------------------------------------------
 #if defined(__NT__)
-//void NT_CDECL term_sockets(void)
-void term_sockets(void)
+void NT_CDECL term_sockets(void)
 {
   WSACleanup();
 }
@@ -215,7 +212,7 @@ idarpc_stream_t *init_client_irs(const char *hostname, int port_number)
   setup_irs((idarpc_stream_t*)rpc_socket);
 
   struct sockaddr_in sa;
-  if ( !name_to_sockaddr(hostname, port_number, &sa) )
+  if ( !name_to_sockaddr(hostname, (ushort)port_number, &sa) )
   {
     warning("ICON ERROR\nAUTOHIDE NONE\n"
             "Could not resolve %s: %s", hostname, winerr(get_network_error()));

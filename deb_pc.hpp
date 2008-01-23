@@ -7,7 +7,7 @@
 //#define Esi Rsi
 //#define Edi Rdi
 //#define Ebp Rbp
-#define Esp Rsp
+//#define Esp Rsp
 #define Eip Rip
 typedef DWORD64 cpuregtype_t;
 #else

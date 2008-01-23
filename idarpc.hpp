@@ -14,12 +14,12 @@
 #define TIMEOUT         (1000/25)       // in milliseconds, timeout for polling
                                         // network and debugger
 
-#ifdef __LINUX__
-#define SYSTEM_SPECIFIC_ERRNO   errno
-#define SYSTEM_SPECIFIC_ERRSTR  strerror
-#else
+#ifdef __NT__
 #define SYSTEM_SPECIFIC_ERRNO  GetLastError()
 #define SYSTEM_SPECIFIC_ERRSTR winerr
+#else
+#define SYSTEM_SPECIFIC_ERRNO   errno
+#define SYSTEM_SPECIFIC_ERRSTR  strerror
 #endif
 
 // functions exported by the local debugger client for the remote:
@@ -48,22 +48,22 @@ int  idaapi prefix ## start_process(const char *path,                          \
                                 const char *input_path,                        \
                                 ulong input_file_crc32);                       \
 int  idaapi prefix ## get_debug_event(debug_event_t *event, bool ida_is_idle); \
-int  idaapi prefix ## attach_process(process_id_t process_id, int event_id);   \
+int  idaapi prefix ## attach_process(pid_t process_id, int event_id);          \
 int  idaapi prefix ## prepare_to_pause_process(void);                          \
 int  idaapi prefix ## exit_process(void);                                      \
 int  idaapi prefix ## continue_after_event(const debug_event_t *event);        \
 void idaapi prefix ## set_exception_info(const exception_info_t *info, int qty); \
 void idaapi prefix ## stopped_at_debug_event(void);                            \
-int  idaapi prefix ## thread_suspend(thread_id_t thread_id);                   \
-int  idaapi prefix ## thread_continue(thread_id_t thread_id);                  \
-int  idaapi prefix ## thread_set_step(thread_id_t thread_id);                  \
-int  idaapi prefix ## thread_read_registers(thread_id_t thread_id,             \
+int  idaapi prefix ## thread_suspend(thid_t thread_id);                        \
+int  idaapi prefix ## thread_continue(thid_t thread_id);                       \
+int  idaapi prefix ## thread_set_step(thid_t thread_id);                       \
+int  idaapi prefix ## thread_read_registers(thid_t thread_id,                  \
                                             regval_t *values,                  \
                                             int count);                        \
-int  idaapi prefix ## thread_write_register(thread_id_t thread_id,             \
+int  idaapi prefix ## thread_write_register(thid_t thread_id,                  \
                                             int reg_idx,                       \
                                             const regval_t *value);            \
-int  idaapi prefix ## thread_get_sreg_base(thread_id_t thread_id,              \
+int  idaapi prefix ## thread_get_sreg_base(thid_t thread_id,                   \
                                            int sreg_value,                     \
                                            ea_t *ea);                          \
 int  idaapi prefix ## get_memory_info(memory_info_t **areas, int *qty);        \
@@ -196,6 +196,7 @@ inline void serror(const char *format, ...)
 
 #ifdef USE_ASYNC
 inline void lprintf(const char *,...) {} // No stdout on some WinCE devices?
+                                         // msg() funcion is disabled too (see dumb.cpp)
 #else
 inline void lprintf(const char *format,...)
 {

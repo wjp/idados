@@ -380,9 +380,9 @@ debugger_t debugger =
 #endif
   thread_read_registers,
   thread_write_register,
-  r_thread_get_sreg_base,
+  thread_get_sreg_base,
 
-  r_get_memory_info,
+  get_memory_info,
   r_read_memory,
   r_write_memory,
 

@@ -19,9 +19,7 @@
 
 //#define DEBUG_NETWORK
 #ifdef DEBUGGER_SERVER
-//ERIC #define verb(x)  do { if ( verbose ) msg x; } while(0)
-#define verb(x)  do { msg x; } while(0)
-
+#define verb(x)  do { if ( verbose ) msg x; } while(0)
 #else
 #define verb(x)  //msg x
 #endif
@@ -30,7 +28,7 @@
 #ifdef REMOTE_DEBUGGER
 
 static debug_event_t pending_event;
-static int network_error_code;     // 0 means everything is ok
+static ssize_t network_error_code;     // 0 means everything is ok
 bool has_pending_event;
 bool poll_debug_events;
 static idarpc_stream_t *irs;
@@ -52,6 +50,8 @@ static idarpc_stream_t *irs;
                          // to use the event sent by RPC_EVENT.
                          // In other words, if the server has sent RPC_EVENT but has not
                          // received RPC_EVOK, it should fail all GET_DEBUG_EVENTS.
+
+
 
 // codes client->server
 #define RPC_INIT                      10
@@ -707,7 +707,7 @@ static string perform_request(const rpc_packet_t *rp)
 
     case RPC_ATTACH_PROCESS:
       {
-        process_id_t pid = extract_long(&ptr, end);
+        pid_t pid = extract_long(&ptr, end);
         int event_id = extract_long(&ptr, end);
         bool result = remote_attach_process(pid, event_id);
         verb(("attach_process(pid=%u, evid=%d) => %d\n", pid, event_id, result));
@@ -748,7 +748,7 @@ static string perform_request(const rpc_packet_t *rp)
 
     case RPC_TH_SUSPEND:
       {
-        thread_id_t tid = extract_long(&ptr, end);
+        thid_t tid = extract_long(&ptr, end);
         bool result = remote_thread_suspend(tid);
         verb(("thread_suspend(tid=%d) => %d\n", tid, result));
         append_long(cmd, result);
@@ -757,7 +757,7 @@ static string perform_request(const rpc_packet_t *rp)
 
     case RPC_TH_CONTINUE:
       {
-        thread_id_t tid = extract_long(&ptr, end);
+        thid_t tid = extract_long(&ptr, end);
         bool result = remote_thread_continue(tid);
         verb(("thread_continue(tid=%08X) => %d\n", tid, result));
         append_long(cmd, result);
@@ -766,7 +766,7 @@ static string perform_request(const rpc_packet_t *rp)
 
     case RPC_TH_SET_STEP:
       {
-        thread_id_t tid = extract_long(&ptr, end);
+        thid_t tid = extract_long(&ptr, end);
         bool result = remote_thread_set_step(tid);
         verb(("thread_set_step(tid=%08X) => %d\n", tid, result));
         append_long(cmd, result);
@@ -775,7 +775,7 @@ static string perform_request(const rpc_packet_t *rp)
 
     case RPC_READ_REGS:
       {
-        thread_id_t tid = extract_long(&ptr, end);
+        thid_t tid = extract_long(&ptr, end);
         int nregs = extract_long(&ptr, end);
         regval_t *values = new regval_t[nregs];
         if ( values == NULL ) goto nomem;
@@ -789,7 +789,7 @@ static string perform_request(const rpc_packet_t *rp)
 
     case RPC_WRITE_REG:
       {
-        thread_id_t tid = extract_long(&ptr, end);
+        thid_t tid = extract_long(&ptr, end);
         int reg_idx = extract_long(&ptr, end);
         regval_t value;
         extract_regvals(&ptr, end, &value, 1);
@@ -801,7 +801,7 @@ static string perform_request(const rpc_packet_t *rp)
 
     case RPC_GET_SREG_BASE:
       {
-        thread_id_t tid = extract_long(&ptr, end);
+        thid_t tid = extract_long(&ptr, end);
         int sreg_value = extract_long(&ptr, end);
         ea_t ea;
         bool result = remote_thread_get_sreg_base(tid, sreg_value, &ea);
@@ -1252,7 +1252,7 @@ int rpc_get_debug_event(debug_event_t *event, bool ida_is_idle)
 }
 
 //--------------------------------------------------------------------------
-int rpc_attach_process(process_id_t pid, int event_id)
+int rpc_attach_process(pid_t pid, int event_id)
 {
   string cmd = prepare_rpc_packet(RPC_ATTACH_PROCESS);
   append_long(cmd, pid);
@@ -1291,25 +1291,25 @@ void rpc_stopped_at_debug_event(void)
 }
 
 //--------------------------------------------------------------------------
-int rpc_thread_suspend(thread_id_t tid)
+int rpc_thread_suspend(thid_t tid)
 {
   return rpc_getint2(RPC_TH_SUSPEND, tid);
 }
 
 //--------------------------------------------------------------------------
-int rpc_thread_continue(thread_id_t tid)
+int rpc_thread_continue(thid_t tid)
 {
   return rpc_getint2(RPC_TH_CONTINUE, tid);
 }
 
 //--------------------------------------------------------------------------
-int rpc_thread_set_step(thread_id_t tid)
+int rpc_thread_set_step(thid_t tid)
 {
   return rpc_getint2(RPC_TH_SET_STEP, tid);
 }
 
 //--------------------------------------------------------------------------
-int rpc_thread_read_registers(thread_id_t tid, regval_t *values, int n)
+int rpc_thread_read_registers(thid_t tid, regval_t *values, int n)
 {
   string cmd = prepare_rpc_packet(RPC_READ_REGS);
   append_long(cmd, tid);
@@ -1327,7 +1327,7 @@ int rpc_thread_read_registers(thread_id_t tid, regval_t *values, int n)
 }
 
 //--------------------------------------------------------------------------
-int rpc_thread_write_register(thread_id_t tid, int reg_idx, const regval_t *value)
+int rpc_thread_write_register(thid_t tid, int reg_idx, const regval_t *value)
 {
   string cmd = prepare_rpc_packet(RPC_WRITE_REG);
   append_long(cmd, tid);
@@ -1430,7 +1430,7 @@ int rpc_del_bpt(ea_t ea, const uchar *orig_bytes, int len)
 }
 
 //--------------------------------------------------------------------------
-int rpc_thread_get_sreg_base(thread_id_t tid, int sreg_value, ea_t *ea)
+int rpc_thread_get_sreg_base(thid_t tid, int sreg_value, ea_t *ea)
 {
   string cmd = prepare_rpc_packet(RPC_GET_SREG_BASE);
   append_long(cmd, tid);

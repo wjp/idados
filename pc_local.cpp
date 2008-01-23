@@ -202,7 +202,7 @@ static void DEBUG_REGVALS(regval_t *values)
 #endif
 
 //--------------------------------------------------------------------------
-int idaapi thread_read_registers(thread_id_t thread_id, regval_t *values, int count)
+int idaapi thread_read_registers(thid_t thread_id, regval_t *values, int count)
 {
   int code = r_thread_read_registers(thread_id, values, count);
   if ( code > 0 )
@@ -221,7 +221,7 @@ int idaapi thread_read_registers(thread_id_t thread_id, regval_t *values, int co
 }
 
 //--------------------------------------------------------------------------
-int idaapi thread_write_register(thread_id_t thread_id, int reg_idx, const regval_t *value)
+int idaapi thread_write_register(thid_t thread_id, int reg_idx, const regval_t *value)
 {
   regval_t rv = *value;
   // FPU related registers
@@ -233,6 +233,21 @@ int idaapi thread_write_register(thread_id_t thread_id, int reg_idx, const regva
   }
   return r_thread_write_register(thread_id, reg_idx, &rv);
 }
+
+int idaapi thread_get_sreg_base(thid_t tid, int sreg_value, ea_t *answer)
+{
+//	int code = r_thread_get_sreg_base(tid, sreg_value, answer);
+	msg("get_sreg_base(%d, %04X)\n", tid, sreg_value);
+	answer = 0;
+	*answer = 0x10*sreg_value;
+	return 1;
+}
+
+int idaapi get_memory_info(memory_info_t **areas, int *qty)
+{
+	return r_get_memory_info(areas, qty);
+}
+
 
 //--------------------------------------------------------------------------
 int is_valid_bpt(bpttype_t type, ea_t ea, int len)

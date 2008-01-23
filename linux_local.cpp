@@ -45,6 +45,13 @@ static bool init_plugin(void)
   if ( ph.id != PLFM_386 ) return false; // only IBM PC
 #endif
 
+  msg("cpu id: %d, %X, cs: %d, ds: %d %d %d\n", ph.id, ph.flag, ph.regCodeSreg, ph.regDataSreg, ph.regsNum, ph.segreg_size);
+
+  for (int i = 0; i < ph.regsNum; ++i)
+	  msg("reg %d: %s\n", i, ph.regNames[i] ? ph.regNames[i] : "");
+
+  msg("asm id: %s, %X\n", ash.name, ash.flag);
+
   is_dll = false; // FIXME!
 
   msg("ok\n");
