@@ -217,6 +217,7 @@ int idaapi thread_read_registers(thid_t thread_id, regval_t *values, int count)
       }
     }
   }
+  msg("cs: %04llX, ds: %04llX\n", values[R_CS].ival, values[R_DS].ival);
   return code;
 }
 
