@@ -535,10 +535,52 @@ static void append_debug_event(string &s, const debug_event_t *ev)
 }
 
 //--------------------------------------------------------------------------
+/*
 inline void append_regvals(string &s, const regval_t *values, int n)
 {
   s.append((char *)values, sizeof(regval_t)*n);
 }
+*/
+
+inline void append_longlong(string &s, ulonglong x)
+{
+  uchar buf[sizeof(ulonglong)+1];
+  uchar *ptr = buf;
+  ptr = pack_dq(ptr, buf + sizeof(buf), x);
+  s.append((char *)buf, ptr-buf);
+}
+
+inline void append_short(string &s, ushort x)
+{
+  uchar buf[sizeof(ushort)+1];
+  uchar *ptr = buf;
+  ptr = pack_dw(ptr, buf + sizeof(buf), x);
+  s.append((char *)buf, ptr-buf);
+}
+
+//--------------------------------------------------------------------------
+inline void append_regvals(string &s, const regval_t *values, int n)
+{
+
+//FIXME possibly not endian safe!!!
+//  s.append((char *)values, sizeof(regval_t)*n);
+
+ const regval_t *reg_ptr = values;
+ 
+ for(int i=0; i < n; i++)
+ {
+   append_long(s, reg_ptr->ival);
+   //append_long(s, 10);
+   //append_long(s, 0);
+   
+   for(int j=0; j < 6; j++)
+     append_short(s, reg_ptr->fval[j]);
+   reg_ptr++;
+ }
+ 
+}
+
+
 
 //--------------------------------------------------------------------------
 inline void extract_regvals(const uchar **ptr, const uchar *end, regval_t *values, int n)
@@ -547,7 +589,7 @@ inline void extract_regvals(const uchar **ptr, const uchar *end, regval_t *value
  
  for(int i = 0;i < n; i++)
  {
-	reg_ptr->ival = extract_longlong(ptr, end);
+	reg_ptr->ival = extract_long(ptr, end);
 	for(int j=0;j<6;j++)
 	{
 	 // reg_ptr->fval[j] = 20;
