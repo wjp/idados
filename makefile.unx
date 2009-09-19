@@ -1,25 +1,41 @@
+include $(IDA)/allmake.unx
+
 #DONT_FORCE_CPP=1
 #__CFLAGS=-DLIBWRAP
 #LIBWRAP=-lwrap
 WRPOBJ=linux_check$(O)
-PROC=linux_dosbox
-O1=linux_rstub
+PROC=dosbox_rstub
+O1=rpc_debmod_dosbox
 O2=tcpip
-ADDITIONAL_GOALS=
+O3=rpc_hlp
+O4=rpc_engine
+O5=util
+O6=rpc_client
+O7=rpc_debmod
+O8=debmod
 
-include ../plugin.unx
+CFLAGS+=-I$(IDA)/plugins/debugger/
 
-# MAKEDEP dependency list ------------------
-$(F)linux_rstub$(O): $(I)area.hpp $(I)bytes.hpp $(I)dbg.hpp $(I)diskio.hpp  \
-	          $(I)err.h $(I)fpro.h $(I)funcs.hpp $(I)help.h             \
-	          $(I)ida.hpp $(I)idd.hpp $(I)idp.hpp $(I)kernwin.hpp       \
-	          $(I)lines.hpp $(I)llong.hpp $(I)loader.hpp $(I)nalt.hpp   \
-	          $(I)name.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
-	          $(I)ua.hpp $(I)xref.hpp common_local.cpp deb_pc.hpp       \
-	          idarpc.cpp idarpc.hpp linux_local.cpp linux_rstub.cpp     \
-	          pc_local.cpp
-$(F)tcpip$(O)   : $(I)area.hpp $(I)bytes.hpp $(I)err.h $(I)fpro.h           \
-	          $(I)funcs.hpp $(I)help.h $(I)ida.hpp $(I)idd.hpp          \
-	          $(I)idp.hpp $(I)kernwin.hpp $(I)lines.hpp $(I)llong.hpp   \
-	          $(I)nalt.hpp $(I)netnode.hpp $(I)pro.h $(I)segment.hpp    \
-	          $(I)ua.hpp $(I)xref.hpp idarpc.hpp tcpip.cpp
+OBJ1=$(F)$(O1)$(O)
+OBJ2=$(IDA)/plugins/debugger/$(O2)$(O)
+OBJ3=$(IDA)/plugins/debugger/$(O3)$(O)
+OBJ4=$(IDA)/plugins/debugger/$(O4)$(O)
+OBJ5=$(IDA)/plugins/debugger/$(O5)$(O)
+OBJ6=$(IDA)/plugins/debugger/$(O6)$(O)
+OBJ7=$(IDA)/plugins/debugger/$(O7)$(O)
+OBJ8=$(IDA)/plugins/debugger/$(O8)$(O)
+
+OBJS=$(F)$(PROC)$(O) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8)
+
+SUBDIR=plugins/
+BINARY=$(R)$(SUBDIR)$(PROC)$(PLUGIN)
+
+all: $(BINARY)
+
+ifdef __LINUX
+PLUGIN_SCRIPT=-Wl,--version-script=../plugin.script
+endif
+
+$(BINARY): $(IDA)/plugins/plugin.script $(OBJS)
+	$(CCL) $(OUTDLL) $(OUTSW)$@ $(OBJS) -L$(R) -lida$(SUFF64) $(PLUGIN_SCRIPT) $(ADDITIONAL_LIBS)
+
