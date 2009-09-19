@@ -1,0 +1,54 @@
+CC=g++
+CFLAGS=-D__NT__ -D__IDP__ -I../../include -DNO_OBSOLETE_FUNCS -D__IDP__ -D__PLUGIN__ -mrtd -mno-cygwin
+LFLAGS=../../libgcc.w32/ida.a -Wl,--dll -shared -lwsock32 
+
+all: dosbox_stub.plw
+
+dosbox_rstub.cpp:
+tcpip.cpp:
+rpc_debmod_dosbox.cpp:
+rpc_hlp.cpp:
+rpc_engine.cpp:
+util.cpp:
+rpc_client.cpp:
+rpc_debmod.cpp:
+debmod.cpp:
+
+rebase_msdos.plw: rebase.cpp
+	$(CC) $(CFLAGS) -o $@ rebase.cpp ../../libgcc.w32/ida.a -Wl,--dll -shared
+
+dosbox_stub.plw: dosbox_rstub.o tcpip.o rpc_debmod_dosbox.o rpc_hlp.o rpc_engine.o util.o rpc_client.o rpc_debmod.o debmod.o
+	$(CC) $(CFLAGS) -o $@ dosbox_rstub.o tcpip.o rpc_debmod_dosbox.o rpc_hlp.o rpc_engine.o util.o rpc_client.o rpc_debmod.o debmod.o $(LFLAGS)
+
+dosbox_rstub.o: dosbox_rstub.cpp dosbox_local_impl.cpp
+	$(CC) -c $(CFLAGS) -o $@ dosbox_rstub.cpp
+
+tcpip.o: tcpip.cpp
+	$(CC) -c $(CFLAGS) -o $@ tcpip.cpp
+
+rpc_debmod_dosbox.o: rpc_debmod_dosbox.cpp
+	$(CC) -c $(CFLAGS) -o $@ rpc_debmod_dosbox.cpp
+
+rpc_hlp.o: rpc_hlp.cpp
+	$(CC) -c $(CFLAGS) -o $@ rpc_hlp.cpp
+
+rpc_engine.o: rpc_engine.cpp
+	$(CC) -c $(CFLAGS) -o $@ rpc_engine.cpp
+
+util.o: util.cpp
+	$(CC) -c $(CFLAGS) -o $@ util.cpp
+
+rpc_client.o: rpc_client.cpp
+	$(CC) -c $(CFLAGS) -o $@ rpc_client.cpp
+
+rpc_debmod.o: rpc_debmod.cpp
+	$(CC) -c $(CFLAGS) -o $@ rpc_debmod.cpp
+
+debmod.o: debmod.cpp
+	$(CC) -c $(CFLAGS) -o $@ debmod.cpp
+
+install: dosbox_stub.plw
+	cp dosbox_stub.plw /c/Program\ Files/IDA/plugins
+
+clean:
+	rm dosbox_stub.plw *.o
