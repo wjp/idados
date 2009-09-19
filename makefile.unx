@@ -4,7 +4,7 @@ include $(IDA)/allmake.unx
 #__CFLAGS=-DLIBWRAP
 #LIBWRAP=-lwrap
 WRPOBJ=linux_check$(O)
-PROC=dosbox_rstub
+PROC1=dosbox_rstub
 O1=rpc_debmod_dosbox
 O2=tcpip
 O3=rpc_hlp
@@ -16,6 +16,14 @@ O8=debmod
 
 CFLAGS+=-I$(IDA)/plugins/debugger/
 
+ifdef __EA64__
+CFLAGS+=-m64
+CCL+=-m64
+else
+CFLAGS+=-m32
+CCL+=-m32
+endif
+
 OBJ1=$(F)$(O1)$(O)
 OBJ2=$(IDA)/plugins/debugger/$(O2)$(O)
 OBJ3=$(IDA)/plugins/debugger/$(O3)$(O)
@@ -25,17 +33,33 @@ OBJ6=$(IDA)/plugins/debugger/$(O6)$(O)
 OBJ7=$(IDA)/plugins/debugger/$(O7)$(O)
 OBJ8=$(IDA)/plugins/debugger/$(O8)$(O)
 
-OBJS=$(F)$(PROC)$(O) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8)
+rstub_OBJS=\
+  $(F)dosbox_rstub$(O) \
+  $(F)rpc_debmod_dosbox$(O) \
+  $(IDA)/plugins/debugger/tcpip$(O) \
+  $(IDA)/plugins/debugger/rpc_hlp$(O) \
+  $(IDA)/plugins/debugger/rpc_engine$(O) \
+  $(IDA)/plugins/debugger/util$(O) \
+  $(IDA)/plugins/debugger/rpc_client$(O) \
+  $(IDA)/plugins/debugger/rpc_debmod$(O) \
+  $(IDA)/plugins/debugger/debmod$(O)
+
+rebase_OBJS=\
+  $(F)rebase$(O)
 
 SUBDIR=plugins/
-BINARY=$(R)$(SUBDIR)$(PROC)$(PLUGIN)
+rstub_BINARY=$(R)$(SUBDIR)dosbox_rstub$(PLUGIN)
+rebase_BINARY=$(R)$(SUBDIR)rebase_msdos$(PLUGIN)
 
-all: $(BINARY)
+all: $(rstub_BINARY) $(rebase_BINARY)
 
 ifdef __LINUX
 PLUGIN_SCRIPT=-Wl,--version-script=../plugin.script
 endif
 
-$(BINARY): $(IDA)/plugins/plugin.script $(OBJS)
-	$(CCL) $(OUTDLL) $(OUTSW)$@ $(OBJS) -L$(R) -lida$(SUFF64) $(PLUGIN_SCRIPT) $(ADDITIONAL_LIBS)
+$(rstub_BINARY): $(IDA)/plugins/plugin.script $(rstub_OBJS)
+	$(CCL) $(OUTDLL) $(OUTSW)$@ $(rstub_OBJS) -L$(R) -lida$(SUFF64) $(PLUGIN_SCRIPT) $(ADDITIONAL_LIBS)
+
+$(rebase_BINARY): $(IDA)/plugins/plugin.script $(rebase_OBJS)
+	$(CCL) $(OUTDLL) $(OUTSW)$@ $(rebase_OBJS) -L$(R) -lida$(SUFF64) $(PLUGIN_SCRIPT) $(ADDITIONAL_LIBS)
 
