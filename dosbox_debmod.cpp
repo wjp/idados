@@ -205,7 +205,7 @@ int idaapi dosbox_debmod_t::dbg_start_process(
   app_base = find_app_base();
   printf("app_base = %x\n", app_base);
   stack = SegValue(ss);
-
+printf("name %s \n",path);
   create_process_start_event(path);
   return 1;
 }
@@ -818,12 +818,31 @@ if(!first_run)
 
    memory_info_t *mi = &miv.push_back();
    mi->startEA = 0x0;
-   mi->endEA = (ea_t)GetAddress(SegValue(ds),0);
+   mi->endEA = 0x400;
    mi->endEA--;
-   mi->name = "ROM";
+   mi->name = "INT_TABLE";
+   mi->bitness = 0;
+   mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE;
+   mi->sbase = 0; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+
+   mi = &miv.push_back();
+   mi->startEA = 0x400;
+   mi->endEA = 0x600;
+   mi->endEA--;
+   mi->name = "BIOS";
    mi->bitness = 0;
    mi->perm = 0 | SEGPERM_READ;
-   mi->sbase = 0; 
+   mi->sbase = 0x40; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+   mi = &miv.push_back();
+   mi->startEA = 0x600;
+   mi->endEA = (ea_t)GetAddress(SegValue(ds),0);
+   mi->endEA--;
+   mi->name = "DOS?";
+   mi->bitness = 0;
+   mi->perm = 0 | SEGPERM_READ;
+   mi->sbase = 0x40; 
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
 
    mi = &miv.push_back();
@@ -857,6 +876,43 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->sbase = SegValue(ss);
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
 */
+   mi = &miv.push_back();
+   mi->startEA = 0xA0000;
+   mi->endEA = 0xB0000;
+   mi->endEA--;
+   mi->name = "A000";
+   mi->bitness = 0;
+   mi->perm = 0 | SEGPERM_READ;
+   mi->sbase = 0xa000; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+
+   mi = &miv.push_back();
+   mi->startEA = 0xB0000;
+   mi->endEA = 0xB8000;
+   mi->endEA--;
+   mi->name = "B000";
+   mi->bitness = 0;
+   mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE;
+   mi->sbase = 0xb000; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+   mi = &miv.push_back();
+   mi->startEA = 0xB8000;
+   mi->endEA = 0xC0000;
+   mi->endEA--;
+   mi->name = "B800";
+   mi->bitness = 0;
+   mi->perm = 0 | SEGPERM_READ |SEGPERM_WRITE;
+   mi->sbase = 0xb800; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+   mi = &miv.push_back();
+   mi->startEA = 0xC0000;
+   mi->endEA = 0xC1000;
+   mi->endEA--;
+   mi->name = "VIDBIOS";
+   mi->bitness = 0;
+   mi->perm = 0 | SEGPERM_READ | SEGPERM_EXEC;
+   mi->sbase = 0xc000; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
 
    mi = &miv.push_back();
    mi->startEA = (ea_t)GetAddress(0xf100,0); 
