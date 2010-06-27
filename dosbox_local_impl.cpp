@@ -69,6 +69,14 @@ bool rebase_exe(adiff_t delta)
 }
 
 //--------------------------------------------------------------------------
+// installs or uninstalls debugger specific idc functions
+inline bool register_idc_funcs(bool)
+{
+  return true;
+  }
+
+
+//--------------------------------------------------------------------------
 void idaapi rebase_if_required_to(ea_t new_base)
 {
   ea_t currentbase = new_base;
