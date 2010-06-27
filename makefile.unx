@@ -25,24 +25,24 @@ CCL+=-m32
 endif
 
 OBJ1=$(F)$(O1)$(O)
-OBJ2=$(IDA)/plugins/debugger/$(O2)$(O)
-OBJ3=$(IDA)/plugins/debugger/$(O3)$(O)
-OBJ4=$(IDA)/plugins/debugger/$(O4)$(O)
-OBJ5=$(IDA)/plugins/debugger/$(O5)$(O)
-OBJ6=$(IDA)/plugins/debugger/$(O6)$(O)
-OBJ7=$(IDA)/plugins/debugger/$(O7)$(O)
-OBJ8=$(IDA)/plugins/debugger/$(O8)$(O)
+OBJ2=$(IDA)/plugins/debugger/$(OBJDIR)/$(O2)$(O)
+OBJ3=$(IDA)/plugins/debugger/$(OBJDIR)/$(O3)$(O)
+OBJ4=$(IDA)/plugins/debugger/$(OBJDIR)/$(O4)$(O)
+OBJ5=$(IDA)/plugins/debugger/$(OBJDIR)/$(O5)$(O)
+OBJ6=$(IDA)/plugins/debugger/$(OBJDIR)/$(O6)$(O)
+OBJ7=$(IDA)/plugins/debugger/$(OBJDIR)/$(O7)$(O)
+OBJ8=$(IDA)/plugins/debugger/$(OBJDIR)/$(O8)$(O)
 
 rstub_OBJS=\
   $(F)dosbox_rstub$(O) \
   $(F)rpc_debmod_dosbox$(O) \
-  $(IDA)/plugins/debugger/tcpip$(O) \
-  $(IDA)/plugins/debugger/rpc_hlp$(O) \
-  $(IDA)/plugins/debugger/rpc_engine$(O) \
-  $(IDA)/plugins/debugger/util$(O) \
-  $(IDA)/plugins/debugger/rpc_client$(O) \
-  $(IDA)/plugins/debugger/rpc_debmod$(O) \
-  $(IDA)/plugins/debugger/debmod$(O)
+  $(IDA)/plugins/debugger/$(OBJDIR)/tcpip$(O) \
+  $(IDA)/plugins/debugger/$(OBJDIR)/rpc_hlp$(O) \
+  $(IDA)/plugins/debugger/$(OBJDIR)/rpc_engine$(O) \
+  $(IDA)/plugins/debugger/$(OBJDIR)/util$(O) \
+  $(IDA)/plugins/debugger/$(OBJDIR)/rpc_client$(O) \
+  $(IDA)/plugins/debugger/$(OBJDIR)/rpc_debmod$(O) \
+  $(IDA)/plugins/debugger/$(OBJDIR)/debmod$(O)
 
 rebase_OBJS=\
   $(F)rebase$(O)
