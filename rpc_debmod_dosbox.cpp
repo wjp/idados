@@ -48,12 +48,12 @@ int rpc_debmod_dosbox_t::dbg_init(bool _debug_debugger)
  return rpc_debmod_t::dbg_init(_debug_debugger);
 }
 
-gdecode_t idaapi rpc_debmod_dosbox_t::dbg_get_debug_event(debug_event_t *event, bool ida_is_idle)
+gdecode_t idaapi rpc_debmod_dosbox_t::dbg_get_debug_event(debug_event_t *event, int timeout_ms)
 {
   gdecode_t ret;
   last_event = NO_EVENT;
 
-  ret = rpc_debmod_t::dbg_get_debug_event(event, ida_is_idle);
+  ret = rpc_debmod_t::dbg_get_debug_event(event, timeout_ms);
 
 //  msg("IN event = %x\n", event->eid);
 

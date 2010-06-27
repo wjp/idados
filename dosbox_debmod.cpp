@@ -422,10 +422,10 @@ bool metrotrk_t::handle_notification(uchar seq, void *ud) // plugin version
 
 
 //--------------------------------------------------------------------------
-gdecode_t idaapi dosbox_debmod_t::dbg_get_debug_event(debug_event_t *event, bool ida_is_idle)
+gdecode_t idaapi dosbox_debmod_t::dbg_get_debug_event(debug_event_t *event, int timeout_ms)
 {
   if ( event == NULL )
-    return 0;
+    return GDE_NO_EVENT;
 
   while ( true )
   {
@@ -433,7 +433,7 @@ gdecode_t idaapi dosbox_debmod_t::dbg_get_debug_event(debug_event_t *event, bool
     if ( events.retrieve(event) )
     {
       debdeb("GDE: %s\n", debug_event_str(event));
-      return 1;
+      return GDE_ONE_EVENT;
     }
     // no pending events, check the target
 //    trk.poll_for_event(ida_is_idle ? TIMEOUT : 0);
@@ -441,7 +441,7 @@ gdecode_t idaapi dosbox_debmod_t::dbg_get_debug_event(debug_event_t *event, bool
       break;
   }
 
-  return 0;
+  return GDE_NO_EVENT;
 }
 
 //--------------------------------------------------------------------------
@@ -659,14 +659,16 @@ int idaapi dosbox_debmod_t::dbg_thread_set_step(thid_t tid)
 }
 
 //--------------------------------------------------------------------------
-int idaapi dosbox_debmod_t::dbg_thread_read_registers(thid_t tid, regval_t *values, int n)
+int idaapi dosbox_debmod_t::dbg_read_registers(thid_t tid, int clsmask, regval_t *values)
 {
-  uint32 rvals[17];
-  QASSERT(n > 0 && n <= qnumber(rvals));
+//  uint32 rvals[17];
+//  QASSERT(n > 0 && n <= qnumber(rvals));
 
-  memset(values, 0, n * sizeof(regval_t)); // force null bytes at the end of floating point registers.
+//  memset(values, 0, n * sizeof(regval_t)); // force null bytes at the end of floating point registers.
                                                // we need this to properly detect register modifications,
                                                // as we compare the whole regval_t structure !
+
+  if ( (clsmask & X86_RC_GENERAL) != 0 ) {
 
   values[R_EAX   ].ival = (uint64)reg_eax;
   values[R_EBX   ].ival = (uint64)reg_ebx;
@@ -680,6 +682,11 @@ int idaapi dosbox_debmod_t::dbg_thread_read_registers(thid_t tid, regval_t *valu
 //  values[R_ESP   ].ival = GetAddress(SegValue(ss), (Bit32u)reg_esp);
 //  values[R_EIP   ].ival = GetAddress(SegValue(cs), (Bit32u)reg_eip);
   values[R_EFLAGS].ival = (uint64)reg_flags;
+
+  }
+
+  if ( (clsmask & X86_RC_SEGMENTS) != 0 ) {
+
   values[R_CS    ].ival = (uint64)SegValue(cs);
   values[R_DS    ].ival = (uint64)SegValue(ds);
   values[R_ES    ].ival = (uint64)SegValue(es);
@@ -687,6 +694,9 @@ int idaapi dosbox_debmod_t::dbg_thread_read_registers(thid_t tid, regval_t *valu
   values[R_GS    ].ival = (uint64)SegValue(gs);
   values[R_SS    ].ival = (uint64)SegValue(ss);
 
+  }
+
+  // TODO: clear registers for X86_RC_XMM, X86_RC_FPU, X86_RC_MMX
 
   printf("AX = %08x",(uint64)values[R_EAX   ].ival);
   printf(" BX = %08x",(uint64)values[R_EBX   ].ival);
@@ -732,7 +742,7 @@ int idaapi dosbox_debmod_t::dbg_thread_read_registers(thid_t tid, regval_t *valu
 }
 
 //--------------------------------------------------------------------------
-int idaapi dosbox_debmod_t::dbg_thread_write_register(thid_t tid, int reg_idx, const regval_t *value)
+int idaapi dosbox_debmod_t::dbg_write_register(thid_t tid, int reg_idx, const regval_t *value)
 {
   uint32 v = (uint32)value->ival;
   printf("write_reg R%d <- %08X\n", reg_idx, v);

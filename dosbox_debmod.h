@@ -92,7 +92,7 @@ public:
     int flags,
     const char *input_path,
     uint32 input_file_crc32);
-  virtual gdecode_t  idaapi dbg_get_debug_event(debug_event_t *event, bool ida_is_idle);
+  virtual gdecode_t  idaapi dbg_get_debug_event(debug_event_t *event, int timeout_ms);
   virtual int  idaapi dbg_attach_process(pid_t process_id, int event_id);
   virtual int  idaapi dbg_prepare_to_pause_process(void);
   virtual int  idaapi dbg_exit_process(void);
@@ -101,10 +101,8 @@ public:
   virtual int  idaapi dbg_thread_suspend(thid_t thread_id);
   virtual int  idaapi dbg_thread_continue(thid_t thread_id);
   virtual int  idaapi dbg_thread_set_step(thid_t thread_id);
-  virtual int  idaapi dbg_thread_read_registers(thid_t thread_id,
-    regval_t *values,
-    int count);
-  virtual int  idaapi dbg_thread_write_register(thid_t thread_id,
+  virtual int  idaapi dbg_read_registers(thid_t thread_id, int clsmask, regval_t *values);
+  virtual int  idaapi dbg_write_register(thid_t thread_id,
     int reg_idx,
     const regval_t *value);
   virtual int  idaapi dbg_thread_get_sreg_base(thid_t thread_id,
