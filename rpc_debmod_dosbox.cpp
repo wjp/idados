@@ -2,6 +2,8 @@
 
 //  #define BREAKPOINT_BUG_FIX 1
 
+#include "typeinf.hpp"
+
 #include "deb_pc.hpp"
 
 #include "rpc_debmod_dosbox.h"
