@@ -270,7 +270,7 @@ void idaapi rebase_if_required_to(ea_t new_base)
 //--------------------------------------------------------------------------
 static bool init_plugin(void)
 {
-#ifndef DEBUGGER_CLIENT
+#ifndef RPC_CLIENT
   if (!init_subsystem())
     return false;
 #endif

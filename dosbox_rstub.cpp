@@ -1,5 +1,5 @@
 #define REMOTE_DEBUGGER
-#define DEBUGGER_CLIENT
+#define RPC_CLIENT
 
 char wanted_name[] = "Remote Dosbox debugger";
 #define DEBUGGER_NAME  "dosbox"
@@ -7,6 +7,8 @@ char wanted_name[] = "Remote Dosbox debugger";
 #define TARGET_PROCESSOR PLFM_386
 #define DEBUGGER_ID    DEBUGGER_ID_X86_DOSBOX_EMULATOR
 #define DEBUGGER_FLAGS DBG_FLAG_REMOTE | DBG_FLAG_USE_SREGS
+//#define HAVE_APPCALL
+
 //////
 #include "tcpip.h"
 #include <ua.hpp>
