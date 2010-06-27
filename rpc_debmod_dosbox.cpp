@@ -46,9 +46,9 @@ int rpc_debmod_dosbox_t::dbg_init(bool _debug_debugger)
  return rpc_debmod_t::dbg_init(_debug_debugger);
 }
 
-int idaapi rpc_debmod_dosbox_t::dbg_get_debug_event(debug_event_t *event, bool ida_is_idle)
+gdecode_t idaapi rpc_debmod_dosbox_t::dbg_get_debug_event(debug_event_t *event, bool ida_is_idle)
 {
-  int ret;
+  gdecode_t ret;
   last_event = NO_EVENT;
 
   ret = rpc_debmod_t::dbg_get_debug_event(event, ida_is_idle);

@@ -92,7 +92,7 @@ public:
     int flags,
     const char *input_path,
     uint32 input_file_crc32);
-  virtual int  idaapi dbg_get_debug_event(debug_event_t *event, bool ida_is_idle);
+  virtual gdecode_t  idaapi dbg_get_debug_event(debug_event_t *event, bool ida_is_idle);
   virtual int  idaapi dbg_attach_process(pid_t process_id, int event_id);
   virtual int  idaapi dbg_prepare_to_pause_process(void);
   virtual int  idaapi dbg_exit_process(void);

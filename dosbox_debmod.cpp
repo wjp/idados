@@ -422,7 +422,7 @@ bool metrotrk_t::handle_notification(uchar seq, void *ud) // plugin version
 
 
 //--------------------------------------------------------------------------
-int idaapi dosbox_debmod_t::dbg_get_debug_event(debug_event_t *event, bool ida_is_idle)
+gdecode_t idaapi dosbox_debmod_t::dbg_get_debug_event(debug_event_t *event, bool ida_is_idle)
 {
   if ( event == NULL )
     return 0;
