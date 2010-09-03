@@ -1,6 +1,8 @@
+IDA=/home/efry/idasdk57
+IDA_DEBUG=$(IDA)/plugins/debugger
 CC=g++
-CFLAGS=-D__NT__ -D__IDP__ -I../../include -DNO_OBSOLETE_FUNCS -D__IDP__ -D__PLUGIN__ -mrtd -mno-cygwin
-LFLAGS=../../libgcc.w32/ida.a -Wl,--dll -shared -lwsock32 
+CFLAGS=-D__NT__ -D__IDP__ -I$(IDA)/include -I$(IDA_DEBUG) -DNO_OBSOLETE_FUNCS -D__IDP__ -D__PLUGIN__ -mrtd -mno-cygwin
+LFLAGS=$(IDA)/lib/gcc.w32/ida.a -Wl,--dll -shared -lwsock32 -lws2_32 
 
 all: dosbox_stub.plw
 
@@ -24,28 +26,28 @@ dosbox_rstub.o: dosbox_rstub.cpp dosbox_local_impl.cpp
 	$(CC) -c $(CFLAGS) -o $@ dosbox_rstub.cpp
 
 tcpip.o: tcpip.cpp
-	$(CC) -c $(CFLAGS) -o $@ tcpip.cpp
+	$(CC) -c $(CFLAGS) -o $@  $(IDA_DEBUG)/tcpip.cpp
 
 rpc_debmod_dosbox.o: rpc_debmod_dosbox.cpp
-	$(CC) -c $(CFLAGS) -o $@ rpc_debmod_dosbox.cpp
+	$(CC) -c $(CFLAGS) -o $@  rpc_debmod_dosbox.cpp
 
 rpc_hlp.o: rpc_hlp.cpp
-	$(CC) -c $(CFLAGS) -o $@ rpc_hlp.cpp
+	$(CC) -c $(CFLAGS) -o $@  $(IDA_DEBUG)/rpc_hlp.cpp
 
 rpc_engine.o: rpc_engine.cpp
-	$(CC) -c $(CFLAGS) -o $@ rpc_engine.cpp
+	$(CC) -c $(CFLAGS) -o $@  $(IDA_DEBUG)/rpc_engine.cpp
 
 util.o: util.cpp
-	$(CC) -c $(CFLAGS) -o $@ util.cpp
+	$(CC) -c $(CFLAGS) -o $@  $(IDA_DEBUG)/util.cpp
 
 rpc_client.o: rpc_client.cpp
-	$(CC) -c $(CFLAGS) -o $@ rpc_client.cpp
+	$(CC) -c $(CFLAGS) -o $@  $(IDA_DEBUG)/rpc_client.cpp
 
 rpc_debmod.o: rpc_debmod.cpp
-	$(CC) -c $(CFLAGS) -o $@ rpc_debmod.cpp
+	$(CC) -c $(CFLAGS) -o $@  $(IDA_DEBUG)/rpc_debmod.cpp
 
 debmod.o: debmod.cpp
-	$(CC) -c $(CFLAGS) -o $@ debmod.cpp
+	$(CC) -c $(CFLAGS) -o $@  $(IDA_DEBUG)/debmod.cpp
 
 install: dosbox_stub.plw
 	cp dosbox_stub.plw /c/Program\ Files/IDA/plugins
