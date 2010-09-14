@@ -24,6 +24,8 @@ CFLAGS+=-m32
 CCL+=-m32
 endif
 
+CFLAGS+=-D__IDP__ -D__PLUGIN__
+
 OBJ1=$(F)$(O1)$(O)
 OBJ2=$(IDA)/plugins/debugger/$(OBJDIR)/$(O2)$(O)
 OBJ3=$(IDA)/plugins/debugger/$(OBJDIR)/$(O3)$(O)
