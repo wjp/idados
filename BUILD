@@ -1,13 +1,12 @@
 To build the plugin for linux:
 
 
-export IDA=/path/to/idasdk55
+export IDA=/path/to/idasdk55/
 export __LINUX__=1
 
-Edit $IDA/plugins/debugger/tcpip.h, to change the definition of SOCKET
-from int to intptr_t.
+You may have to add #include <stdio.h> to $IDA/include/pro.h with new GCCs.
 
-$(IDA)/bin/idamake.pl
+perl $IDA/bin/idamake.pl
 
 
 
