@@ -75,6 +75,37 @@ inline bool register_idc_funcs(bool)
   return true;
   }
 
+//FIXUP offsets.
+//-------------------------------------------------------------------------
+static bool idaapi has_offset(flags_t F, void *)
+{
+ return isHead(F) && isOff(F, -1);
+}
+
+static void move_nalt_info(ea_t from, ea_t to, asize_t size, int flags)
+{
+ ea_t ea = 0;
+ do
+ {
+   flags_t F = get_flags_novalue(ea);
+   if ( (flags & MSF_FIXONCE) != 0 && isOff(F, -1) && ea >= to) //ERIC  && ea < to+size )
+   {
+     for ( int i=0; i < 2; i++ )
+     {
+       if ( !isOff(F, i) )
+         continue;
+       refinfo_t ri;
+       if ( get_refinfo(ea, i, &ri) && ri.base != 0 && ri.base != BADADDR )
+       {
+         ri.base += to - from;
+         set_refinfo_ex(ea, i, &ri);
+         //msg("fixup offset %a, ri.base = %x\n", ea, ri.base);
+       }
+     }
+   }
+   ea = nextthat(ea, BADADDR, has_offset, NULL);
+ } while ( ea != BADADDR );
+}
 
 //--------------------------------------------------------------------------
 void idaapi rebase_if_required_to(ea_t new_base)
@@ -89,7 +120,7 @@ void idaapi rebase_if_required_to(ea_t new_base)
     adiff_t delta = currentbase - imagebase;
     delta /= 16;
     msg("delta = %d\n", delta);
-
+/*
     if(inf.filetype == f_EXE)
     {
       if(rebase_exe(delta) == false)
@@ -98,7 +129,7 @@ void idaapi rebase_if_required_to(ea_t new_base)
         return; 
       }
     }
-
+*/
     int code = rebase_program(currentbase - imagebase, MSF_FIXONCE);
     if ( code != MOVE_SEGM_OK )
     {
@@ -113,72 +144,11 @@ void idaapi rebase_if_required_to(ea_t new_base)
     }
     else
     {
-
-      //fix up segment selectors
-      segment_t *seg;
-      for(int i = 0;i < get_segm_qty();i++)
-      {
-        seg = getnseg(i);
-        if(seg->is_debugger_segm() == false)
-        {
-          seg->sel += delta; //seg->startEA>>4;
-          seg->update();
-msg("seg[%d] ", i);
-          for(int j = 0;j<SREG_NUM;j++)
-          {
-             sel_t sel = seg->defsr[j];
-             if(sel != BADSEL)
-             {
-               msg("sel[%s] = %x %x, ", ph.regNames[j+ph.regFirstSreg], sel, sel + delta);
-               SetDefaultRegisterValue(seg, j+ph.regFirstSreg, sel + delta);
-             }
-          }
-msg("\n");
-
-        }
-      }
-
-      int sr_num =  SRareas.get_area_qty();
-      segreg_t *sr;
-      sel_t regs[SREG_NUM];
-      bool update_sr;
-      //rebase segment registers
-      for(int i = 0; i < sr_num;i++)
-      {
-        sr = getnSRarea(i);
-        update_sr = false;
-
-        for(int j=0;j<SREG_NUM;j++)
-        {
-          regs[j] = sr->reg(ph.regFirstSreg+j);
-          if(regs[j] != BADSEL)
-          {
-            if(((int)regs[j] + delta) >= 0)
-            {
-              ea_t sEA = (regs[j] + delta)<<4;
-              seg = getseg(sEA);
-
-              if(seg != NULL && seg->is_debugger_segm() == false)
-              {
-                regs[j] += delta;
-//                msg("regs[%s] = %x ", ph.regNames[j+ph.regFirstSreg], regs[j]);
-                update_sr = true;
-              }
-            }
-          }
-        } 
-
-        if(update_sr)
-        {
-//          msg("\n");
-          sr->setregs(regs);
-          SRareas.update(sr);
-        }
-      }
+       move_nalt_info(imagebase, currentbase, 0, MSF_FIXONCE);
     }
 
-   set_imagebase(0);
-   inf.baseaddr = new_base >> 4;
+  // set_imagebase(0);
+  // inf.baseaddr = new_base >> 4;
 
    warning("Database rebased to %ah\n", new_base);
 
