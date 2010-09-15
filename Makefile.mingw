@@ -17,7 +17,7 @@ rpc_debmod.cpp:
 debmod.cpp:
 
 rebase_msdos.plw: rebase.cpp
-	$(CC) $(CFLAGS) -o $@ rebase.cpp ../../libgcc.w32/ida.a -Wl,--dll -shared
+	$(CC) $(CFLAGS) -o $@ rebase.cpp $(IDA)/lib/gcc.w32/ida.a -Wl,--dll -shared
 
 dosbox_stub.plw: dosbox_rstub.o tcpip.o rpc_debmod_dosbox.o rpc_hlp.o rpc_engine.o util.o rpc_client.o rpc_debmod.o debmod.o
 	$(CC) $(CFLAGS) -o $@ dosbox_rstub.o tcpip.o rpc_debmod_dosbox.o rpc_hlp.o rpc_engine.o util.o rpc_client.o rpc_debmod.o debmod.o $(LFLAGS)
