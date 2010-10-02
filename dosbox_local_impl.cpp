@@ -269,7 +269,7 @@ inline void term_plugin(void)
 char comment[] = "Userland dosbox debugger plugin.";
 
 char help[] =
-        "A sample Userland dosbox debugger plugin\n"
+        "Userland dosbox debugger plugin.\n"
         "\n"
-        "This module shows you how to create debugger plugins.\n";
+        "This module lets you debug programs running in DOSBox.\n";
 
