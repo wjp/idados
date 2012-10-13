@@ -65,3 +65,4 @@ $(rstub_BINARY): $(IDA)/plugins/plugin.script $(rstub_OBJS)
 $(rebase_BINARY): $(IDA)/plugins/plugin.script $(rebase_OBJS)
 	$(CCL) $(OUTDLL) $(OUTSW)$@ $(rebase_OBJS) -L$(R) -lida$(SUFF64) $(PLUGIN_SCRIPT) $(ADDITIONAL_LIBS)
 
+$(F)dosbox_rstub$(O): rpc_debmod_dosbox.h dosbox_local_impl.cpp dosbox_rstub.cpp

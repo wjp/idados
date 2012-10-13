@@ -255,8 +255,6 @@ static bool init_plugin(void)
   if ( ph.id != PLFM_386 )
     return false; // only IBM PC
 
-  is_dll = false; // FIXME!
-
   return true;
 }
 

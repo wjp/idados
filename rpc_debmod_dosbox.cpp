@@ -10,7 +10,7 @@
 
 static const char *get_reg_name(int reg_idx);
 
-int  idaapi rpc_debmod_dosbox_t::map_address(ea_t ea, const regval_t *regs, int regnum)
+ea_t idaapi rpc_debmod_dosbox_t::map_address(ea_t ea, const regval_t *regs, int regnum)
 {
  ea_t mapped_ea = ea;
 
