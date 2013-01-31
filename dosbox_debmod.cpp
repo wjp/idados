@@ -111,8 +111,9 @@ int idaapi dosbox_debmod_t::dbg_add_bpt(bpttype_t type, ea_t ea, int len)
 }
 
 //--------------------------------------------------------------------------
-int idaapi dosbox_debmod_t::dbg_del_bpt(ea_t ea, const uchar * /*orig_bytes*/, int /*len*/)
+int idaapi dosbox_debmod_t::dbg_del_bpt(bpttype_t /*type*/, ea_t ea, const uchar * /*orig_bytes*/, int /*len*/)
 {
+  // FIXME: Handle 'type' argument!
   bpts_t::iterator p = bpts.find(ea);
   if ( p == bpts.end() )
     return 0; // failed

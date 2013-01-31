@@ -112,7 +112,7 @@ public:
   virtual ssize_t idaapi dbg_read_memory(ea_t ea, void *buffer, size_t size);
   virtual ssize_t idaapi dbg_write_memory(ea_t ea, const void *buffer, size_t size);
   virtual int  idaapi dbg_add_bpt(bpttype_t type, ea_t ea, int len);
-  virtual int  idaapi dbg_del_bpt(ea_t ea, const uchar *orig_bytes, int len);
+  virtual int  idaapi dbg_del_bpt(bpttype_t type, ea_t ea, const uchar *orig_bytes, int len);
   virtual int  idaapi dbg_open_file(const char *file, uint32 *fsize, bool readonly);
   virtual void idaapi dbg_close_file(int fn);
   virtual ssize_t idaapi dbg_read_file(int fn, uint32 off, void *buf, size_t size);
