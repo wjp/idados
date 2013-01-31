@@ -37,14 +37,7 @@ OBJ8=$(IDA)/plugins/debugger/$(OBJDIR)/$(O8)$(O)
 
 rstub_OBJS=\
   $(F)dosbox_rstub$(O) \
-  $(F)rpc_debmod_dosbox$(O) \
-  $(IDA)/plugins/debugger/$(OBJDIR)/tcpip$(O) \
-  $(IDA)/plugins/debugger/$(OBJDIR)/rpc_hlp$(O) \
-  $(IDA)/plugins/debugger/$(OBJDIR)/rpc_engine$(O) \
-  $(IDA)/plugins/debugger/$(OBJDIR)/util$(O) \
-  $(IDA)/plugins/debugger/$(OBJDIR)/rpc_client$(O) \
-  $(IDA)/plugins/debugger/$(OBJDIR)/rpc_debmod$(O) \
-  $(IDA)/plugins/debugger/$(OBJDIR)/debmod$(O)
+  $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8)
 
 rebase_OBJS=\
   $(F)rebase$(O)
@@ -53,7 +46,9 @@ SUBDIR=plugins/
 rstub_BINARY=$(R)$(SUBDIR)dosbox_rstub$(PLUGIN)
 rebase_BINARY=$(R)$(SUBDIR)rebase_msdos$(PLUGIN)
 
-all: $(rstub_BINARY) $(rebase_BINARY)
+all: objdir $(rstub_BINARY) $(rebase_BINARY)
+
+include $(IDA)/objdir.mak
 
 ifdef __LINUX
 PLUGIN_SCRIPT=-Wl,--version-script=../plugin.script
@@ -66,3 +61,18 @@ $(rebase_BINARY): $(IDA)/plugins/plugin.script $(rebase_OBJS)
 	$(CCL) $(OUTDLL) $(OUTSW)$@ $(rebase_OBJS) -L$(R) -lida$(SUFF64) $(PLUGIN_SCRIPT) $(ADDITIONAL_LIBS)
 
 $(F)dosbox_rstub$(O): rpc_debmod_dosbox.h dosbox_local_impl.cpp dosbox_rstub.cpp
+
+$(OBJ2):
+	(cd $(IDA)/plugins/debugger; perl $(IDA)/bin/idamake.pl $(F)$(O2)$(O))
+$(OBJ3):
+	(cd $(IDA)/plugins/debugger; perl $(IDA)/bin/idamake.pl $(F)$(O3)$(O))
+$(OBJ4):
+	(cd $(IDA)/plugins/debugger; perl $(IDA)/bin/idamake.pl $(F)$(O4)$(O))
+$(OBJ5):
+	(cd $(IDA)/plugins/debugger; perl $(IDA)/bin/idamake.pl $(F)$(O5)$(O))
+$(OBJ6):
+	(cd $(IDA)/plugins/debugger; perl $(IDA)/bin/idamake.pl $(F)$(O6)$(O))
+$(OBJ7):
+	(cd $(IDA)/plugins/debugger; perl $(IDA)/bin/idamake.pl $(F)$(O7)$(O))
+$(OBJ8):
+	(cd $(IDA)/plugins/debugger; perl $(IDA)/bin/idamake.pl $(F)$(O8)$(O))
