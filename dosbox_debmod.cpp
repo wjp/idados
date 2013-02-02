@@ -32,6 +32,12 @@ void idados_stopped();
 extern debugger_t debugger;
 bool debug_debugger;
 
+//--------------------------------------------------------------------------
+// Initialize static members
+// TODO: Can we support this?
+bool dosbox_debmod_t::reuse_broken_connections = false;
+
+
 static const int T = 20;
 
 //--------------------------------------------------------------------------
@@ -85,12 +91,12 @@ void dosbox_debmod_t::cleanup(void)
 //--------------------------------------------------------------------------
 int idaapi dosbox_debmod_t::dbg_add_bpt(bpttype_t type, ea_t ea, int len)
 {
-  qnotused(type);
   bpts_t::iterator p = bpts.find(ea);
   if ( p != bpts.end() )
   {
     // already has a bpt at the specified address
     // unfortunately the kernel may ask to set several bpts at the same addr
+    // FIXME: Handle 'type' here too
     p->second.cnt++;
     return 1;
   }
@@ -102,7 +108,11 @@ int idaapi dosbox_debmod_t::dbg_add_bpt(bpttype_t type, ea_t ea, int len)
  {
    case BPT_EXEC :
    case BPT_SOFT : DEBUG_AddBreakPoint((Bit32u)ea, false); break;
+   case BPT_RDWR :
    case BPT_WRITE : DEBUG_AddMemBreakPoint((Bit32u)ea); break;
+   case BPT_READ :
+     // Unsupported
+     return 0; // failed
  }
 
   bpts.insert(std::make_pair(ea, bpt_info_t(1, 1)));

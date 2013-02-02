@@ -73,6 +73,8 @@ public:
 
   bpts_t bpts;                     // breakpoint list
 
+  static bool reuse_broken_connections;
+
   dosbox_debmod_t();
   ~dosbox_debmod_t();
 
