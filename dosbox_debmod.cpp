@@ -234,7 +234,7 @@ void dosbox_debmod_t::create_process_start_event(const char *path)
   ev.tid = NO_PROCESS;//pi.tid;
   ev.ea = BADADDR;
   ev.handled = false;
-  qstrncpy(ev.modinfo.name, "GAME1.EXE", sizeof(ev.modinfo.name));
+  qstrncpy(ev.modinfo.name, path, sizeof(ev.modinfo.name));
   process_name = path;
   ev.modinfo.base = app_base + 0x100; //base + PSP //entry_point; //pi.codeaddr;
   ev.modinfo.size = 0;
