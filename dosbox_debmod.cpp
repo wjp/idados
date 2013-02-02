@@ -968,7 +968,7 @@ ssize_t idaapi dosbox_debmod_t::dbg_read_memory(ea_t ea, void *buffer, size_t si
    addr++;
   }
 
- printf("dgb_read_memory @ %x, size=%d\n", ea, size);
+ printf("dbg_read_memory @ %x, size=%d\n", ea, size);
  return size;
 }
 
