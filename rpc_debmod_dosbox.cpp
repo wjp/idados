@@ -1,7 +1,3 @@
-//define to include breakpoint EIP bug fix.
-
-//  #define BREAKPOINT_BUG_FIX 1
-
 #include "typeinf.hpp"
 
 #include "deb_pc.hpp"
@@ -21,10 +17,6 @@ ea_t idaapi rpc_debmod_dosbox_t::map_address(ea_t ea, const regval_t *regs, int 
    switch(regnum)
    {
      case R_EIP : 
-#ifdef BREAKPOINT_BUG_FIX
-                  if(last_event == BREAKPOINT)
-                    break;
-#endif
                   mapped_ea = (regs[R_CS].ival<<4) + regs[R_EIP].ival;
                   break;
      case R_ESP : mapped_ea = (regs[R_SS].ival<<4) + regs[R_ESP].ival; break;
@@ -40,29 +32,6 @@ ea_t idaapi rpc_debmod_dosbox_t::map_address(ea_t ea, const regval_t *regs, int 
 
   return mapped_ea;
 }
-
-int rpc_debmod_dosbox_t::dbg_init(bool _debug_debugger)
-{
- last_event = NO_EVENT;
-
- return rpc_debmod_t::dbg_init(_debug_debugger);
-}
-
-gdecode_t idaapi rpc_debmod_dosbox_t::dbg_get_debug_event(debug_event_t *event, int timeout_ms)
-{
-  gdecode_t ret;
-  last_event = NO_EVENT;
-
-  ret = rpc_debmod_t::dbg_get_debug_event(event, timeout_ms);
-
-//  msg("IN event = %x\n", event->eid);
-
-  if(ret)
-    last_event = event->eid;
-
-  return ret;
-}
-
 
 static const char *get_reg_name(int reg_idx)
 {
