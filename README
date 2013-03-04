@@ -1,0 +1,45 @@
+IDA DOSBox debugger plugin
+
+Authors:
+Eric Fry <efry@users.sourceforge.net>
+Willem Jan Palenstijn <wjp@usecode.org>
+
+
+Getting started:
+
+Get the plugin from https://github.com/wjp/idados .
+Get a patched DOSBox from the 'idados' branch of https://github.com/wjp/dosbox .
+Build the plugin and DOSBox as described in the BUILD file.
+
+Inside dosbox, start the binary X you wish to debug with 'debug X'.
+It will then pause while waiting for a connection from IDA.
+
+In IDA, start the debugger selecting the "Remote DOSBox" debugger.
+You should be able to leave the connection options at their defaults.
+
+
+
+Notes:
+
+This plugin has not been tested on many platforms, but it has been reported to
+work with 32-bit IDA 6.4 Starter on 64-bit Linux and 64-bit Mac OS X. Older
+versions have been known to work with mingw32 on Windows, but it is unknown if
+this still works out of the box.
+
+The debugger plugin will rebase the program to match the memory location
+in dosbox, but there have been many bugs with this in older versions of IDA.
+If this is causing problems, try manually rebasing before starting the debugger,
+or even recreating the database at the right offset.
+
+There is a known bug with breakpoints on the program entry point. As a
+workaround, you can use the "Suspend on debugging start" option in IDA if you
+wish to break on starting the process. Breakpoints at other locations should
+work fine.
+
+Using the dynamic core in dosbox can lead to unexpected behaviour. Use the
+normal core instead.
+
+With a 32-bit IDA, you will have to build a 32-bit dosbox, even on 64-bit
+platforms.
+
+And finally, patches to improve the plugin are most welcome!
