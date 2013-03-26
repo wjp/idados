@@ -837,6 +837,7 @@ if(!first_run)
 
    // Read from PSP
    int last_user_seg = mem_readw(GetAddress(app_base>>4, 0x2));
+   printf("last user seg = %d\n", last_user_seg);
 
    memory_info_t *mi = &miv.push_back();
    mi->startEA = 0x0;
@@ -877,18 +878,16 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->sbase = app_base>>4;
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
 
-/*
-   // IDA seems to take care of this itself
    mi = &miv.push_back();
-   mi->startEA = app_base + 0x100;
+   mi->startEA = app_base + 0x200;
    mi->endEA = (ea_t)GetAddress(last_user_seg, 0x10);
    mi->endEA--;
-   mi->name = ".text";
+   mi->name = ".text"; // Not the best name; it also covers data/stack/...
    mi->bitness = 0;
    mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE | SEGPERM_EXEC;
-   mi->sbase = SegValue(cs); // TODO: Does CS always have the right value here?
+   mi->sbase = app_base>>4;
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
-*/
+
 /*
    // IDA seems to take care of this itself
    mi = &miv.push_back();
