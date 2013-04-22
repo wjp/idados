@@ -1070,13 +1070,13 @@ int idaapi dosbox_debmod_t::dbg_thread_get_sreg_base(
 }
 
 //--------------------------------------------------------------------------
-bool idaapi dosbox_debmod_t::refresh_hwbpts(void)
+bool dosbox_debmod_t::refresh_hwbpts(void)
 {
   return 0; // not implemented
 }
 
 //--------------------------------------------------------------------------
-HANDLE idaapi dosbox_debmod_t::get_thread_handle(thid_t tid)
+HANDLE dosbox_debmod_t::get_thread_handle(thid_t tid)
 {
   return (HANDLE)tid; // there are no thread handles
 }

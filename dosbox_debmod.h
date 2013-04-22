@@ -120,8 +120,8 @@ public:
   virtual ssize_t idaapi dbg_read_file(int fn, uint32 off, void *buf, size_t size);
   virtual ssize_t idaapi dbg_write_file(int fn, uint32 off, const void *buf, size_t size);
   virtual int idaapi get_system_specific_errno(void) const;
-  virtual bool idaapi refresh_hwbpts(void);
-  virtual HANDLE idaapi get_thread_handle(thid_t tid);
+  virtual bool refresh_hwbpts(void);
+  virtual HANDLE get_thread_handle(thid_t tid);
   virtual int idaapi dbg_is_ok_bpt(bpttype_t type, ea_t ea, int len);
 
   bool idaapi close_remote(void);
