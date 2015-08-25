@@ -102,7 +102,7 @@ public:
   virtual void idaapi dbg_stopped_at_debug_event(void);
   virtual int  idaapi dbg_thread_suspend(thid_t thread_id);
   virtual int  idaapi dbg_thread_continue(thid_t thread_id);
-  virtual int  idaapi dbg_thread_set_step(thid_t thread_id);
+  virtual int  idaapi dbg_set_resume_mode(thid_t thread_id, resume_mode_t resmod);
   virtual int  idaapi dbg_read_registers(thid_t thread_id, int clsmask, regval_t *values);
   virtual int  idaapi dbg_write_register(thid_t thread_id,
     int reg_idx,

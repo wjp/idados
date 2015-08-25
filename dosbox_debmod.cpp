@@ -652,8 +652,11 @@ int idaapi dosbox_debmod_t::dbg_thread_continue(thid_t tid)
 }
 
 //--------------------------------------------------------------------------
-int idaapi dosbox_debmod_t::dbg_thread_set_step(thid_t tid)
+int idaapi dosbox_debmod_t::dbg_set_resume_mode(thid_t tid, resume_mode_t resmod)
 {
+  if ( resmod != RESMOD_INTO )
+    return 0; // not supported
+
   stepping[tid] = true;
   dosbox_step_ret = DEBUG_RemoteStep(); //fixme step return.
 
