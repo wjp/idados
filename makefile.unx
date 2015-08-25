@@ -51,7 +51,7 @@ all: objdir $(rstub_BINARY) $(rebase_BINARY)
 include $(IDA)/objdir.mak
 
 ifdef __LINUX
-PLUGIN_SCRIPT=-Wl,--version-script=../plugin.script
+PLUGIN_SCRIPT=-Wl,--version-script=$(IDA)/plugins/plugin.script
 endif
 
 $(rstub_BINARY): $(IDA)/plugins/plugin.script $(rstub_OBJS)
