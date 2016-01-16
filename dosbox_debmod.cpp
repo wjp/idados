@@ -456,7 +456,7 @@ gdecode_t idaapi dosbox_debmod_t::dbg_get_debug_event(debug_event_t *event, int 
 }
 
 //--------------------------------------------------------------------------
-int idaapi dosbox_debmod_t::dbg_attach_process(pid_t pid, int /*event_id*/)
+int idaapi dosbox_debmod_t::dbg_attach_process(pid_t pid, int /*event_id*/, int /* flags */)
 {
 /*
   if ( !trk.attach_process(pid) )

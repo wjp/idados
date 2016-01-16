@@ -95,7 +95,7 @@ public:
     const char *input_path,
     uint32 input_file_crc32);
   virtual gdecode_t  idaapi dbg_get_debug_event(debug_event_t *event, int timeout_ms);
-  virtual int  idaapi dbg_attach_process(pid_t process_id, int event_id);
+  virtual int  idaapi dbg_attach_process(pid_t process_id, int event_id, int flags);
   virtual int  idaapi dbg_prepare_to_pause_process(void);
   virtual int  idaapi dbg_exit_process(void);
   virtual int  idaapi dbg_continue_after_event(const debug_event_t *event);
