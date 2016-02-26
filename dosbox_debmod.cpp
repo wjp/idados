@@ -236,9 +236,9 @@ void dosbox_debmod_t::create_process_start_event(const char *path)
   ev.handled = false;
   qstrncpy(ev.modinfo.name, path, sizeof(ev.modinfo.name));
   process_name = path;
-  ev.modinfo.base = app_base + 0x100; //base + PSP //entry_point; //pi.codeaddr;
+  ev.modinfo.base = 0x1BF000; //app_base + 0x100; //base + PSP //entry_point; //pi.codeaddr;
   ev.modinfo.size = 0;
-  ev.modinfo.rebase_to = app_base + 0x100; //base + PSP //entry_point;
+  ev.modinfo.rebase_to = 0x1BF000 ;// app_base + 0x100; //base + PSP //entry_point;
   events.enqueue(ev, IN_BACK);
 }
 
@@ -847,7 +847,7 @@ if(!first_run)
    mi->endEA = 0x400;
    mi->endEA--;
    mi->name = "INT_TABLE";
-   mi->bitness = 0;
+   mi->bitness = 1;
    mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE;
    mi->sbase = 0; 
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
@@ -857,10 +857,12 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->endEA = 0x600;
    mi->endEA--;
    mi->name = "BIOS";
-   mi->bitness = 0;
+   mi->bitness = 1;
    mi->perm = 0 | SEGPERM_READ;
    mi->sbase = 0x40; 
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+
+#if 0
    mi = &miv.push_back();
    mi->startEA = 0x600;
    mi->endEA = app_base;
@@ -870,17 +872,19 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->perm = 0 | SEGPERM_READ;
    mi->sbase = 0x60;
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+#endif
 
    mi = &miv.push_back();
    mi->startEA = app_base;
    mi->endEA = app_base + 0x100;
    mi->endEA--;
    mi->name = "PSP";
-   mi->bitness = 0;
+   mi->bitness = 1;
    mi->perm = 0 | SEGPERM_READ;
    mi->sbase = app_base>>4;
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
 
+#if 0
    mi = &miv.push_back();
    mi->startEA = app_base + 0x200;
    mi->endEA = (ea_t)GetAddress(last_user_seg, 0x10);
@@ -890,6 +894,7 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE | SEGPERM_EXEC;
    mi->sbase = app_base>>4;
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+#endif
 
 /*
    // IDA seems to take care of this itself
@@ -908,7 +913,7 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->endEA = 0xB0000;
    mi->endEA--;
    mi->name = "A000";
-   mi->bitness = 0;
+   mi->bitness = 1;
    mi->perm = 0 | SEGPERM_READ;
    mi->sbase = 0xa000; 
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
@@ -918,7 +923,7 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->endEA = 0xB8000;
    mi->endEA--;
    mi->name = "B000";
-   mi->bitness = 0;
+   mi->bitness = 1;
    mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE;
    mi->sbase = 0xb000; 
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
@@ -927,7 +932,7 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->endEA = 0xC0000;
    mi->endEA--;
    mi->name = "B800";
-   mi->bitness = 0;
+   mi->bitness = 1;
    mi->perm = 0 | SEGPERM_READ |SEGPERM_WRITE;
    mi->sbase = 0xb800; 
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
@@ -936,7 +941,7 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->endEA = 0xC1000;
    mi->endEA--;
    mi->name = "VIDBIOS";
-   mi->bitness = 0;
+   mi->bitness = 1;
    mi->perm = 0 | SEGPERM_READ | SEGPERM_EXEC;
    mi->sbase = 0xc000; 
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
@@ -946,11 +951,54 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
    mi->endEA = (ea_t)GetAddress(0xf100, 0x1000); 
    mi->endEA--;
    mi->name = ".callbacks";
+   mi->bitness = 1;
    mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE | SEGPERM_EXEC;
    mi->sbase = 0xf100;
 printf("mi = %x,%x\n",mi->startEA, mi->endEA);
 
 printf("CS:IP = %04x:%04x\n",SegValue(cs), reg_eip); 
+
+   mi = &miv.push_back();
+   mi->startEA = 0x1BF000;
+   mi->endEA = 0x24D000;
+   mi->endEA--;
+   mi->name = ".text";
+   mi->bitness = 1;
+   mi->perm = 0 | SEGPERM_READ | SEGPERM_EXEC;
+   mi->sbase = 0x0000; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+
+   mi = &miv.push_back();
+   mi->startEA = 0x24F000;
+   mi->endEA = 0x250000;
+   mi->endEA--;
+   mi->name = ".data";
+   mi->bitness = 1;
+   mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE | SEGPERM_EXEC;
+   mi->sbase = 0x0000; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+
+   mi = &miv.push_back();
+   mi->startEA = 0x25F000;
+   mi->endEA = 0x296000;
+   mi->endEA--;
+   mi->name = ".stack";
+   mi->bitness = 1;
+   mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE | SEGPERM_EXEC;
+   mi->sbase = 0x0000; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+
+   mi = &miv.push_back();
+   mi->startEA = 0x296000;
+   mi->endEA = 0x800000;
+   mi->endEA--;
+   mi->name = ".heap";
+   mi->bitness = 1;
+   mi->perm = 0 | SEGPERM_READ | SEGPERM_WRITE | SEGPERM_EXEC;
+   mi->sbase = 0x0000; 
+printf("mi = %x,%x\n",mi->startEA, mi->endEA);
+
+
 
   first_run = false;
 
@@ -1067,7 +1115,7 @@ int idaapi dosbox_debmod_t::dbg_thread_get_sreg_base(
         int sreg_value,
         ea_t *pe)
 {
-  *pe = sreg_value<<4;
+  *pe = 0; //sreg_value<<4;
 
   return 1;
 }

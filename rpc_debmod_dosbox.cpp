@@ -12,7 +12,7 @@ ea_t idaapi rpc_debmod_dosbox_t::map_address(ea_t ea, const regval_t *regs, int 
 
 // warning("ICON ERROR\nAUTOHIDE NONE\n"
 //      "testing");
- if(regs)
+ if(false && regs)
  {
    switch(regnum)
    {

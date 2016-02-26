@@ -11,6 +11,7 @@ inline bool register_idc_funcs(bool)
 //--------------------------------------------------------------------------
 void idaapi rebase_if_required_to(ea_t new_base)
 {
+  return;
   ea_t currentbase = new_base;
   ea_t imagebase = inf.baseaddr<<4; 
 
@@ -54,10 +55,14 @@ static bool init_plugin(void)
     return debugger.is_remote();
   }
 
+#if 0
   if ( inf.filetype != f_EXE && inf.filetype != f_COM )
     return false; // only MSDOS EXE or COM files
+#endif
+#if 0
   if ( ph.id != PLFM_386 )
     return false; // only IBM PC
+#endif
 
   return true;
 }
