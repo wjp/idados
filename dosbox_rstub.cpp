@@ -1,7 +1,7 @@
 #define REMOTE_DEBUGGER
 #define RPC_CLIENT
 
-char wanted_name[] = "Remote Dosbox debugger";
+char wanted_name[] = "Remote DOSBox debugger";
 #define DEBUGGER_NAME  "dosbox"
 #define PROCESSOR_NAME "metapc"
 #define TARGET_PROCESSOR PLFM_386
