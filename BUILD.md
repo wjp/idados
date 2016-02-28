@@ -60,7 +60,7 @@ First, make sure to copy/symlink your IDA library (Linux: `libida.so`, Mac: `lib
 make
 ```
 
-**MinGW-w64 users:** You will need to change the `#if __GNUC__` surrounding the `memicmp` declaration in `idasdk/include/pro.h` to `#if 0` to compile successfully.
+**MinGW-w64 users:** You will need to change the `#ifdef __GNUC__` surrounding the `memicmp` declaration in `idasdk/include/pro.h` to `#if 0` to compile successfully.
 
 ## 32-bit DOSBox on 64-bit Linux
 
