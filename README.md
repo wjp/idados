@@ -27,7 +27,7 @@
 ## Notes
 
 This plugin has not been tested on many platforms, but it has been reported to
-work with 32-bit IDA 6.4 Starter on 32-bit Windows (using [MSYS2](http://msys2.github.io/)),
+work with 32-bit IDA 6.9 Starter, on 32-bit Windows (using [MSYS2](http://msys2.github.io/)),
 64-bit Linux, and 64-bit Mac OS X.
 
 The debugger plugin will rebase the program to match the memory location

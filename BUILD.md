@@ -33,7 +33,7 @@ The custom DOSBox build also requires some of the files in this repository, so y
 ## Linux
 
 ```
-export IDA=/path/to/idasdk64/
+export IDA=/full/path/to/idasdk/
 export __LINUX__=1
 perl $IDA/bin/idamake.pl
 ```
@@ -41,7 +41,7 @@ perl $IDA/bin/idamake.pl
 ## Mac OS
 
 ```
-export IDA=/path/to/idasdk64/
+export IDA=/full/path/to/idasdk/
 export __MAC__=1
 perl $IDA/bin/idamake.pl
 ```
