@@ -11,14 +11,24 @@ The custom DOSBox build also requires some of the files in this repository, so y
 
 ## Windows
 
+### MSVC
+
 1. Install Microsoft Compiler:
    * [Visual Studio](https://www.visualstudio.com/downloads/download-visual-studio-vs)
    * [Visual C++ for Python 2.7](http://www.microsoft.com/en-us/download/details.aspx?id=44266)
 1. Set path to IDA SDK in `build_vs.bat`
 1. Open the Visual C++ command line (or open a command line and run `vcvarsall.bat x86`)
-1. Run `build_vs.bat`
+1. Run `build_vs.bat` and follow its instructions
 
-Note that the Makefile for MinGW does not work currently. (If you want to try compiling using MinGW, when you link, link to IDA.WLL (rename to IDA.DLL and make sure it is in one of your `-L` paths) using `-Wl,--enable-stdcall-fixup` and *not* the `ida.a` GCC file inside the SDK!)
+### MinGW-w64 (i686)
+
+1. Install [msys2](http://repo.msys2.org/distrib/i686/msys2-i686-20160205.exe) and follow the setup instructions
+1. Run `pacman -S mingw-w64-i686-toolchain` to install GCC
+1. (optional) Run `pacman -S mingw-w64-i686-SDL` to install SDL if you also plan to compile DOSBox with MinGW
+1. Set the path to IDA SDK in `build_mingw.sh`
+1. Run `build_mingw.sh` and follow its instructions
+
+**64-bit IDA/DOSBox:** Replace “i686” with “x86_64” in the instructions above.
 
 ## Linux
 
