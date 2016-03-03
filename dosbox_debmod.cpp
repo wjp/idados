@@ -990,7 +990,7 @@ printf("mi = %x,%x\n",mi->startEA, mi->endEA);
 
    mi = &miv.push_back();
    mi->startEA = 0x296000;
-   mi->endEA = 0x800000;
+   mi->endEA = 0xF00000;
    mi->endEA--;
    mi->name = ".heap";
    mi->bitness = 1;
